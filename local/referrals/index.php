@@ -3,6 +3,11 @@ require('../../config.php');
 
 require_login();
 
+// Get filter and download parameters from the request.
+$fromdate = optional_param('fromdate', 0, PARAM_INT);
+$todate = optional_param('todate', 0, PARAM_INT);
+$download = optional_param('download', 0, PARAM_BOOL);
+
 // Corrected lines
 $PAGE->set_url(new moodle_url('/local/referrals/index.php'));
 $PAGE->set_context(context_system::instance());
