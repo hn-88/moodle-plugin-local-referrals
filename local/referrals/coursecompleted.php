@@ -42,34 +42,41 @@ if ($data) {
 }
 
 // Set up the page, context, and capability check.
-$PAGE->set_url(new moodle_url('/local/referrals/index.php', ['fromdate' => $fromdate, 'todate' => $todate]));
+$PAGE->set_url(new moodle_url('/local/referrals/coursecompleted.php', ['fromdate' => $fromdate, 'todate' => $todate]));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title(get_string('pluginname', 'local_referrals'));
 $PAGE->set_heading(get_string('pluginname', 'local_referrals'));
+$PAGE->set_title('Earlier referrals who completed courses in this interval');
 
 require_capability('moodle/site:config', context_system::instance());
 
 global $DB, $OUTPUT, $PAGE;
 
-// Build the SQL query with conditional WHERE clauses and a JOIN.
-$sql = 'SELECT lr.*, cc.timecompleted AS completiondate FROM {local_referrals} lr';
-$sql .= ' LEFT JOIN {course_completions} cc ON lr.userid = cc.userid AND lr.courseid = cc.course';
+// --- Main SQL Query Logic ---
+// Select all course completions that fall within the filtered date range.
+// LEFT JOIN with local_referrals to include referral data if available.
+// The WHERE clause filters completions by date and also ensures the referral time is before the filtered range.
+$sql = 'SELECT cc.userid, cc.course AS courseid, cc.timecompleted AS completiondate, lr.id, lr.referralid, lr.studentid, lr.coursecode, lr.timecreated FROM {course_completions} cc LEFT JOIN {local_referrals} lr ON cc.userid = lr.userid AND cc.course = lr.courseid';
 $params = [];
 $where = [];
 
+// Filter by completion date range.
 if (!empty($fromdate)) {
-    $where[] = 'lr.timecreated >= :fromdate';
+    $where[] = 'cc.timecompleted >= :fromdate';
     $params['fromdate'] = $fromdate;
 }
 if (!empty($todate)) {
-    $where[] = 'lr.timecreated <= :todate';
-    $params['todate'] = $todate + 86399;
+    $where[] = 'cc.timecompleted <= :todate';
+    $params['todate'] = $todate;
 }
+
+// Add the condition that referral time must be before the completion date range.
+$where[] = '(lr.timecreated IS NULL OR lr.timecreated < :referraldate)';
+$params['referraldate'] = $fromdate;
 
 if (!empty($where)) {
     $sql .= ' WHERE ' . implode(' AND ', $where);
 }
-$sql .= ' ORDER BY lr.timecreated ASC';
+$sql .= ' ORDER BY cc.timecompleted ASC';
 
 // Fetch the filtered data.
 $records = $DB->get_records_sql($sql, $params);
@@ -140,7 +147,7 @@ echo $OUTPUT->heading(get_string('pluginname', 'local_referrals'));
 $form->display();
 
 // Display the download link.
-$downloadurl = new moodle_url('/local/referrals/index.php', ['fromdate' => $fromdate, 'todate' => $todate, 'download' => 1]);
+$downloadurl = new moodle_url('/local/referrals/coursecompleted.php', ['fromdate' => $fromdate, 'todate' => $todate, 'download' => 1]);
 echo html_writer::link($downloadurl, get_string('downloadascsv', 'local_referrals'));
 
 // Build and display the table

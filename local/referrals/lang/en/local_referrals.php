@@ -14,7 +14,7 @@ $string['course'] = 'Course';
 $string['time'] = 'Time recorded';
 
 $string['from'] = 'From date';
-$string['to'] = 'To date';
+$string['to'] = 'To date (Up to but not including)';
 $string['downloadascsv'] = 'Download as CSV';
 
 $string['slno'] = 'Sl.No';
@@ -41,5 +41,5 @@ $string['certificatestatus'] =  'Certificate Status';
 $string['certificateissueddate'] = 'Certificate Issued Date';
 //(Date in the format of  DD/MM/YYYY)"	
 $string['referralid'] = 'SWAYAM Plus Redirect Referal ID';
-
+$string['completionreport'] = 'Earlier Referrals Completion Report';
 
