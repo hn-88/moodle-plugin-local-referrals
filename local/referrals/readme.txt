@@ -13,4 +13,4 @@ CREATE TABLE mdl_local_referrals (
 
 2. Please report issues at https://github.com/hn-88/moodle-plugin-local-referrals/issues
 
-3. This was created with the help of ChatGPT and Gemini - the relevant conversations will be made available on the wiki or issues if possible.
+3. This was created with the help of ChatGPT and Gemini - excerpts from the relevant conversations are at https://github.com/hn-88/moodle-plugin-local-referrals/wiki
