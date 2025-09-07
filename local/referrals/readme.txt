@@ -1,6 +1,6 @@
 Notes:
 ------
-1. This plugin requires a database table called mdl_local_referrals (where mdl_ will be replaced by your moodle database table prefix), this is not automatically handled yet. On MySQL, this would be something like
+1. This plugin requires a database table called mdl_local_referrals (where mdl_ should be replaced by your moodle database table prefix), this is not automatically handled yet. On MySQL, this would be something like
 CREATE TABLE mdl_local_referrals (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     userid BIGINT NOT NULL,
